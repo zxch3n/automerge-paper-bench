@@ -2,7 +2,7 @@
 
 Applying
 [Automerge Paper dataset](https://github.com/automerge/automerge-perf/tree/master/edit-by-index)
-to Loro 100 times.
+to Loro **100 times**.
 
 - 18,231,500 single-character insertion operations
 - 7,746,300 single-character deletion operations
