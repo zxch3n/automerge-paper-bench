@@ -20,10 +20,18 @@ fn bench_loro(c: &mut Criterion) {
     }
     doc.commit();
     println!("Apply time taken: {:?}", start.elapsed());
+
+    let mut group = c.benchmark_group("Old Snapshot");
+    #[allow(deprecated)]
+    let snapshot = doc.export_snapshot();
+    println!("Snapshot size: {}", snapshot.len());
+    bench(&mut group, snapshot, true);
+    group.finish();
+
     let mut group = c.benchmark_group("New Snapshot");
     let snapshot = doc.export(loro::ExportMode::Snapshot).unwrap();
     println!("Snapshot size: {}", snapshot.len());
-    bench(&mut group, snapshot);
+    bench(&mut group, snapshot, false);
     group.finish();
 
     let mut group = c.benchmark_group("Shallow Snapshot");
@@ -33,14 +41,18 @@ fn bench_loro(c: &mut Criterion) {
         ))
         .unwrap();
     println!("Shallow Snapshot size: {}", snapshot.len());
-    bench(&mut group, snapshot);
+    bench(&mut group, snapshot, false);
     group.finish();
 }
 
 fn bench(
     group: &mut criterion::BenchmarkGroup<'_, criterion::measurement::WallTime>,
     snapshot: Vec<u8>,
+    is_old: bool,
 ) {
+    if is_old {
+        group.sample_size(10);
+    }
     group.bench_function("Parse", |b| {
         b.iter(|| {
             let doc = LoroDoc::new();
@@ -71,7 +83,12 @@ fn bench(
             doc.import(black_box(&snapshot)).unwrap();
             black_box(doc.get_text("text").to_string());
             doc.get_text("text").insert(0, "Hello, world!").unwrap();
-            black_box(doc.export(loro::ExportMode::Snapshot).unwrap());
+            if is_old {
+                #[allow(deprecated)]
+                black_box(doc.export_snapshot());
+            } else {
+                black_box(doc.export(loro::ExportMode::Snapshot).unwrap());
+            }
         });
     });
 }

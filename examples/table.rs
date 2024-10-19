@@ -11,6 +11,11 @@ pub fn main() {
     use tabled::Table;
 
     let mut rows = Vec::new();
+    let group = "Old Snapshot";
+    if let ControlFlow::Break(_) = extract_for_group(group, &mut rows) {
+        return;
+    }
+
     let group = "New Snapshot";
     if let ControlFlow::Break(_) = extract_for_group(group, &mut rows) {
         return;
