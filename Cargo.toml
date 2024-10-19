@@ -1,0 +1,23 @@
+[package]
+name = "automerge-paper-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+loro-016 = { git = "https://github.com/loro-dev/loro.git", tag = "loro-crdt@0.16.12", package = "loro" }
+loro = { git = "https://github.com/loro-dev/loro.git", tag = "loro-crdt@1.0.0-beta.1", package = "loro" }
+dev-utils = { git = "https://github.com/loro-dev/loro.git", tag = "loro-crdt@1.0.0-beta.1", package = "dev-utils" }
+serde_columnar = "0.3.10"
+tracing = "0.1.40"
+criterion = "0.4.0"
+rand = "0.8.5"
+zstd = "0.13.2"
+serde_json = "1.0.125"
+itertools = "0.13.0"
+flate2 = "1.0.34"
+tabled = "0.16.0"
+serde = "1.0.210"
+
+[[bench]]
+name = "loro_benchmarks"
+harness = false
